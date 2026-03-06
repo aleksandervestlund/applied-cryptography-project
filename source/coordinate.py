@@ -17,5 +17,5 @@ class Coordinate:
     def to_idx(self) -> tuple[int, int]:
         return ROWS.index(self.row), self.column - 1
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.row}{self.column}"

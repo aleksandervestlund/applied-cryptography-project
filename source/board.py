@@ -18,21 +18,17 @@ from source.square import Square
 @dataclass(slots=True)
 class Board:
     ships: list[Ship]
-    own_view: list[list[Square]] = field(init=False)
+    self_view: list[list[Square]] = field(init=False)
     other_view: list[list[Square]] = field(init=False)
 
     def __post_init__(self) -> None:
-        self.own_view = [
-            [Square.EMPTY for _ in range(N_COLS)] for _ in range(N_ROWS)
-        ]
-        self.other_view = [
-            [Square.EMPTY for _ in range(N_COLS)] for _ in range(N_ROWS)
-        ]
+        self.self_view = [[Square.EMPTY] * N_COLS for _ in range(N_ROWS)]
+        self.other_view = [[Square.EMPTY] * N_COLS for _ in range(N_ROWS)]
 
         for ship in self.ships:
-            for coordinate in ship.all_coordinates:
+            for coordinate in ship.hits:
                 x, y = coordinate.to_idx()
-                self.own_view[x][y] = Square.SHIP
+                self.self_view[x][y] = Square.SHIP
 
     def check_all_ships_sunk(self) -> bool:
         return all(ship.is_sunk() for ship in self.ships)
@@ -40,7 +36,7 @@ class Board:
     def check_hit_on_self(self, coordinate: Coordinate) -> bool:
         x, y = coordinate.to_idx()
 
-        if self.own_view[x][y] in {Square.HIT, Square.MISS}:
+        if self.self_view[x][y] in {Square.HIT, Square.MISS}:
             return False
 
         for ship in self.ships:
@@ -48,11 +44,11 @@ class Board:
                 continue
 
             x, y = coordinate.to_idx()
-            self.own_view[x][y] = Square.HIT
+            self.self_view[x][y] = Square.HIT
             return True
 
         x, y = coordinate.to_idx()
-        self.own_view[x][y] = Square.MISS
+        self.self_view[x][y] = Square.MISS
         return False
 
     def check_hit_on_other(self, coordinate: Coordinate, hit: bool) -> None:
@@ -73,7 +69,7 @@ class Board:
         print(sep)
 
         for i, (own_row, other_row) in enumerate(
-            zip(self.own_view, self.other_view)
+            zip(self.self_view, self.other_view)
         ):
             own_vals = "|".join(f"{sq.value:^3}" for sq in own_row)
             other_vals = "|".join(f"{sq.value:^3}" for sq in other_row)

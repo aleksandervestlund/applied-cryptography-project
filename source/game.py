@@ -16,23 +16,20 @@ class Game:
     player1: Player
     player2: Player
     current_turn: Player = field(init=False)
-    not_current_turn: Player = field(init=False)
+    other_turn: Player = field(init=False)
 
     def __post_init__(self) -> None:
         self.current_turn = self.player1
-        self.not_current_turn = self.player2
+        self.other_turn = self.player2
 
     def switch_turn(self) -> None:
-        self.current_turn, self.not_current_turn = (
-            self.not_current_turn,
-            self.current_turn,
-        )
+        self.current_turn, self.other_turn = self.other_turn, self.current_turn
 
     def take_turn(self) -> None:
         print(TURN_MESSAGE.format(name=self.current_turn.name))
         self.current_turn.board.print_board()
         coordinate = get_coordinate()
-        hit = self.not_current_turn.board.check_hit_on_self(coordinate)
+        hit = self.other_turn.board.check_hit_on_self(coordinate)
         self.current_turn.board.check_hit_on_other(coordinate, hit)
 
         if hit:
@@ -45,7 +42,7 @@ class Game:
         input(ENTER_STRING)
 
     def check_win(self) -> bool:
-        return self.not_current_turn.board.check_all_ships_sunk()
+        return self.other_turn.board.check_all_ships_sunk()
 
     def run(self) -> None:
         while True:

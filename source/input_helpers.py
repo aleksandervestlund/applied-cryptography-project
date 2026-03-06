@@ -12,7 +12,6 @@ from source.constants import (
     ROW_ERROR,
     ROWS,
     SHIP_LENGTHS,
-    VALID_ORIENTATIONS,
 )
 from source.coordinate import Coordinate
 from source.orientation import Orientation
@@ -39,21 +38,23 @@ def get_coordinate() -> Coordinate:
 
 
 def get_orientation() -> Orientation:
+    valid_orientations = {orientation.value for orientation in Orientation}
+
     while True:
-        if (orient := input(ORIENT_MESSAGE).upper()) not in VALID_ORIENTATIONS:
+        if (
+            orientation := input(ORIENT_MESSAGE).upper()
+        ) not in valid_orientations:
             print(ORIENT_ERROR)
             continue
 
-        if orient == VALID_ORIENTATIONS[1]:
+        if orientation == Orientation.HORIZONTAL.value:
             return Orientation.HORIZONTAL
         return Orientation.VERTICAL
 
 
 def get_ship_length(remaining_lengths: Container[int]) -> int:
     while True:
-        length = input(LENGTH_MESSAGE)
-
-        if not length.isdigit():
+        if not (length := input(LENGTH_MESSAGE)).isdigit():
             print(LENGTH_ERROR.format(remaining_lengths=remaining_lengths))
             continue
         if (i_length := int(length)) not in remaining_lengths:
@@ -65,9 +66,7 @@ def get_ship_length(remaining_lengths: Container[int]) -> int:
 
 def check_valid_ship(ship: Ship, ships: Iterable[Ship]) -> bool:
     return not any(
-        coordinate in s.all_coordinates
-        for s in ships
-        for coordinate in ship.all_coordinates
+        coordinate in s.hits for s in ships for coordinate in ship.hits
     )
 
 

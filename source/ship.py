@@ -10,12 +10,12 @@ class Ship:
     base_coordinate: Coordinate
     orientation: Orientation
     ship_length: int
-    all_coordinates: list[Coordinate] = field(init=False)
     hits: dict[Coordinate, bool] = field(init=False)
 
     def __post_init__(self) -> None:
-        self.all_coordinates = self._get_all_coordinates()
-        self.hits = {coordinate: False for coordinate in self.all_coordinates}
+        self.hits = {
+            coordinate: False for coordinate in self._get_all_coordinates()
+        }
 
     def register_hit(self, coordinate: Coordinate) -> bool:
         if not coordinate in self.hits:

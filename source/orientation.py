@@ -1,6 +1,6 @@
-from enum import StrEnum, auto
+from enum import StrEnum
 
 
 class Orientation(StrEnum):
-    HORIZONTAL = auto()
-    VERTICAL = auto()
+    HORIZONTAL = "H"
+    VERTICAL = "V"

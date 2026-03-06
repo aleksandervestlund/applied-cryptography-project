@@ -22,8 +22,6 @@ HIT_MESSAGE = "Hit at {coordinate}!"
 MISS_MESSAGE = "Miss at {coordinate}!"
 ENTER_STRING = "Press Enter to continue..."
 
-VALID_ORIENTATIONS = ("H", "V")
-
 COORDINATE_MESSAGE = "Enter the coordinate (e.g., A1): "
 COORDINATE_ERROR = (
     "Invalid coordinate. Please enter a valid coordinate (e.g., A1)."
