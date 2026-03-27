@@ -19,8 +19,9 @@ BASE_SPACE = " " * BASE_SPACE_LEN
 SEP_SPACE = " " * SEP_SPACE_LEN
 HEAD_SPACE = " " * HEAD_SPACE_LEN
 
-TURN_MSG = "{name}'s turn!"
-WIN_MSG = "{name} wins!"
+TURN_MSG = "Your turn!"
+WIN_MSG = "You won!"
+LOST_MSG = "You lost!"
 HIT_MSG = "Hit at {coordinate}!"
 MISS_MSG = "Miss at {coordinate}!"
 ENTER_MSG = "Press Enter to continue..."
@@ -58,3 +59,10 @@ PEER_CONNECT_MSG = "[Peer connected!]"
 
 YOU_MSG = "You: "
 PEER_MSG = "Peer: "
+
+HIT_STR = "HIT"
+MISS_STR = "MISS"
+LOST_STR = "LOST"
+
+INVALID_COL_ERR = "Invalid column: {column!r}"
+INVALID_ROW_ERR = "Invalid row: {row!r}"

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 
-from source.constants import N_COLS, ROWS
+from source.constants import INVALID_COL_ERR, INVALID_ROW_ERR, N_COLS, ROWS
 
 
 @dataclass(slots=True, frozen=True, eq=True)
@@ -10,12 +12,16 @@ class Coordinate:
 
     def __post_init__(self) -> None:
         if self.row not in ROWS:
-            raise ValueError(f"Invalid row: {self.row!r}")
+            raise ValueError(INVALID_ROW_ERR.format(row=self.row))
         if not 0 < self.column <= N_COLS:
-            raise ValueError(f"Invalid column: {self.column}")
+            raise ValueError(INVALID_COL_ERR.format(column=self.column))
 
     def to_idx(self) -> tuple[int, int]:
         return ROWS.index(self.row), self.column - 1
 
     def __str__(self) -> str:
         return f"{self.row}{self.column}"
+
+    @classmethod
+    def from_str(cls, s: str) -> Coordinate:
+        return cls(row=s[0], column=int(s[1:]))
