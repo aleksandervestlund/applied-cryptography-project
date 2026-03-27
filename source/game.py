@@ -1,55 +1,73 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
+from source.client import recv, send
 from source.constants import (
-    ENTER_STRING,
-    HIT_MESSAGE,
-    MISS_MESSAGE,
-    TURN_MESSAGE,
-    WIN_MESSAGE,
+    HIT_MSG,
+    HIT_STR,
+    LOST_STR,
+    MISS_MSG,
+    MISS_STR,
+    TURN_MSG,
+    WIN_MSG,
 )
+from source.coordinate import Coordinate
 from source.input_helpers import get_coordinate
 from source.player import Player
 
 
 @dataclass(slots=True)
 class Game:
-    player1: Player
-    player2: Player
-    current_turn: Player = field(init=False)
-    other_turn: Player = field(init=False)
+    player: Player
 
-    def __post_init__(self) -> None:
-        self.current_turn = self.player1
-        self.other_turn = self.player2
+    def attacking_turn(self) -> bool:
+        print(TURN_MSG)
+        self.player.board.print_board()
 
-    def switch_turn(self) -> None:
-        self.current_turn, self.other_turn = self.other_turn, self.current_turn
-
-    def take_turn(self) -> None:
-        print(TURN_MESSAGE.format(name=self.current_turn.name))
-        self.current_turn.board.print_board()
         coordinate = get_coordinate()
-        hit = self.other_turn.board.check_hit_on_self(coordinate)
-        self.current_turn.board.check_hit_on_other(coordinate, hit)
+        send(self.player.conn, str(coordinate))
+
+        result = recv()
+        hit = result in {HIT_STR, LOST_STR}
+        self.player.board.check_hit_on_other(coordinate, hit)
 
         if hit:
-            print(HIT_MESSAGE.format(coordinate=coordinate))
+            print(HIT_MSG.format(coordinate=coordinate))
         else:
-            print(MISS_MESSAGE.format(coordinate=coordinate))
+            print(MISS_MSG.format(coordinate=coordinate))
 
-        input(ENTER_STRING)
-        self.current_turn.board.print_board()
-        input(ENTER_STRING)
+        self.player.board.print_board()
+        return result == LOST_STR
 
-    def check_win(self) -> bool:
-        return self.other_turn.board.check_all_ships_sunk()
+    def check_lost(self) -> bool:
+        return self.player.board.check_all_ships_sunk()
+
+    def defending_turn(self) -> bool:
+        coordinate = Coordinate.from_str(recv())
+        hit = self.player.board.check_hit_on_self(coordinate)
+
+        if hit and self.check_lost():
+            send(self.player.conn, LOST_STR)
+            return True
+
+        send(self.player.conn, HIT_STR if hit else MISS_STR)
+        return hit
 
     def run(self) -> None:
+        my_go = self.player.is_host
+
         while True:
-            self.take_turn()
+            if my_go:
+                if self.attacking_turn():
+                    print(WIN_MSG)
+                    break
+            else:
+                self.defending_turn()
 
-            if self.check_win():
-                print(WIN_MESSAGE.format(name=self.current_turn.name))
-                break
+            if my_go := not my_go:
+                if self.attacking_turn():
+                    print(WIN_MSG)
+                    break
+            else:
+                self.defending_turn()
 
-            self.switch_turn()
+            my_go = not my_go

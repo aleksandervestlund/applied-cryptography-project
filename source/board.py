@@ -58,12 +58,12 @@ class Board:
     def print_board(self) -> None:
         column_names = " ".join(f" {i:<2}" for i in range(1, N_COLS + 1))
         board_width = len(column_names)
-        header = f"{column_names}{HEAD_SPACE}{column_names}"
+        header = f"{BASE_SPACE}{column_names}{HEAD_SPACE}{column_names}"
         sep = f"  +{'-' * board_width}+{SEP_SPACE}+{'-' * board_width}+"
 
         print(
-            f"{OWN_BOARD:^{board_width // 2 - 1}}{BASE_SPACE}"
-            f"{OTHER_BOARD:^{board_width // 2 - 1}}"
+            f"  {OWN_BOARD:^{board_width + 2}}{BASE_SPACE}  "
+            f"{OTHER_BOARD:^{board_width + 2}}"
         )
         print(header)
         print(sep)
