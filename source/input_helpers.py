@@ -1,35 +1,41 @@
 from collections.abc import Container, Iterable
 
 from source.constants import (
-    COLUMN_ERROR,
-    COORDINATE_ERROR,
-    COORDINATE_MESSAGE,
-    INVALID_SHIP_ERROR,
-    LENGTH_ERROR,
-    LENGTH_MESSAGE,
-    ORIENT_ERROR,
-    ORIENT_MESSAGE,
-    ROW_ERROR,
+    COLUMN_ERR,
+    COORDINATE_ERR,
+    COORDINATE_MSG,
+    INVALID_SHIP_ERR,
+    LENGTH_ERR,
+    LENGTH_MSG,
+    ORIENT_ERR,
+    ORIENT_MSG,
+    ROLE_MSG,
+    ROW_ERR,
     ROWS,
     SHIP_LENGTHS,
 )
 from source.coordinate import Coordinate
 from source.orientation import Orientation
+from source.role import Role
 from source.ship import Ship
+
+
+def get_input(prompt: str) -> str:
+    return input(prompt).strip()
 
 
 def get_coordinate() -> Coordinate:
     while True:
-        coordinate = input(COORDINATE_MESSAGE)
+        coordinate = get_input(COORDINATE_MSG)
 
         if len(coordinate) != 2:
-            print(COORDINATE_ERROR)
+            print(COORDINATE_ERR)
             continue
         if coordinate[0] not in ROWS:
-            print(ROW_ERROR)
+            print(ROW_ERR)
             continue
         if not coordinate[1].isdigit():
-            print(COLUMN_ERROR)
+            print(COLUMN_ERR)
             continue
 
         row = coordinate[0]
@@ -42,9 +48,9 @@ def get_orientation() -> Orientation:
 
     while True:
         if (
-            orientation := input(ORIENT_MESSAGE).upper()
+            orientation := get_input(ORIENT_MSG).upper()
         ) not in valid_orientations:
-            print(ORIENT_ERROR)
+            print(ORIENT_ERR)
             continue
 
         if orientation == Orientation.HORIZONTAL.value:
@@ -54,11 +60,11 @@ def get_orientation() -> Orientation:
 
 def get_ship_length(remaining_lengths: Container[int]) -> int:
     while True:
-        if not (length := input(LENGTH_MESSAGE)).isdigit():
-            print(LENGTH_ERROR.format(remaining_lengths=remaining_lengths))
+        if not (length := get_input(LENGTH_MSG)).isdigit():
+            print(LENGTH_ERR.format(remaining_lengths=remaining_lengths))
             continue
         if (i_length := int(length)) not in remaining_lengths:
-            print(LENGTH_ERROR.format(remaining_lengths=remaining_lengths))
+            print(LENGTH_ERR.format(remaining_lengths=remaining_lengths))
             continue
 
         return i_length
@@ -82,14 +88,27 @@ def create_ships() -> list[Ship]:
         try:
             ship = Ship(base_coordinate, orientation, ship_length)
         except ValueError:
-            print(INVALID_SHIP_ERROR)
+            print(INVALID_SHIP_ERR)
             continue
 
         if not check_valid_ship(ship, ships):
-            print(INVALID_SHIP_ERROR)
+            print(INVALID_SHIP_ERR)
             continue
 
         ship_lengths.remove(ship_length)
         ships.append(ship)
 
     return ships
+
+
+def get_role() -> Role:
+    valid_roles = {role.value for role in Role}
+
+    while True:
+        match get_input(ROLE_MSG).lower():
+            case Role.HOST.value:
+                return Role.HOST
+            case Role.CLIENT.value:
+                return Role.CLIENT
+            case _:
+                print(f"Invalid role. Valid roles are: {valid_roles}")

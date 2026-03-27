@@ -1,12 +1,6 @@
 from dataclasses import dataclass, field
 
-from source.constants import (
-    ENTER_STRING,
-    HIT_MESSAGE,
-    MISS_MESSAGE,
-    TURN_MESSAGE,
-    WIN_MESSAGE,
-)
+from source.constants import ENTER_MSG, HIT_MSG, MISS_MSG, TURN_MSG, WIN_MSG
 from source.input_helpers import get_coordinate
 from source.player import Player
 
@@ -26,20 +20,20 @@ class Game:
         self.current_turn, self.other_turn = self.other_turn, self.current_turn
 
     def take_turn(self) -> None:
-        print(TURN_MESSAGE.format(name=self.current_turn.name))
+        print(TURN_MSG.format(name=self.current_turn.name))
         self.current_turn.board.print_board()
         coordinate = get_coordinate()
         hit = self.other_turn.board.check_hit_on_self(coordinate)
         self.current_turn.board.check_hit_on_other(coordinate, hit)
 
         if hit:
-            print(HIT_MESSAGE.format(coordinate=coordinate))
+            print(HIT_MSG.format(coordinate=coordinate))
         else:
-            print(MISS_MESSAGE.format(coordinate=coordinate))
+            print(MISS_MSG.format(coordinate=coordinate))
 
-        input(ENTER_STRING)
+        input(ENTER_MSG)
         self.current_turn.board.print_board()
-        input(ENTER_STRING)
+        input(ENTER_MSG)
 
     def check_win(self) -> bool:
         return self.other_turn.board.check_all_ships_sunk()
@@ -49,7 +43,7 @@ class Game:
             self.take_turn()
 
             if self.check_win():
-                print(WIN_MESSAGE.format(name=self.current_turn.name))
+                print(WIN_MSG.format(name=self.current_turn.name))
                 break
 
             self.switch_turn()
