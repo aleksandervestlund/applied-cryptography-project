@@ -25,6 +25,7 @@ def get_input(prompt: str) -> str:
 
 
 def get_coordinate() -> Coordinate:
+    return Coordinate(row="A", column=1)
     while True:
         coordinate = get_input(COORDINATE_MSG)
 
@@ -44,6 +45,7 @@ def get_coordinate() -> Coordinate:
 
 
 def get_orientation() -> Orientation:
+    return Orientation.HORIZONTAL
     valid_orientations = {orientation.value for orientation in Orientation}
 
     while True:
@@ -59,6 +61,7 @@ def get_orientation() -> Orientation:
 
 
 def get_ship_length(remaining_lengths: Container[int]) -> int:
+    return 2
     while True:
         if not (length := get_input(LENGTH_MSG)).isdigit():
             print(LENGTH_ERR.format(remaining_lengths=remaining_lengths))
