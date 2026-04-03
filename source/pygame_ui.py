@@ -13,12 +13,11 @@ class PygameUI:
     PAD = 24
     GAP = 80
     FPS = 60
-    FONT = SysFont("Menlo", 20)
 
     def __init__(self) -> None:
         pygame.init()
-        self.font = self.FONT
-        self.small = self.FONT
+        self.font = SysFont("Menlo", 20)
+        self.small = self.font
 
         board_w = N_COLS * self.CELL
         board_h = N_ROWS * self.CELL
