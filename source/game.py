@@ -26,9 +26,11 @@ class Game:
 
         while True:
             if my_go:
-                ui.draw(self.player.board, status=TURN_MSG)
-
-                if (choice := ui.wait_for_target_click()) is None:
+                if (
+                    choice := ui.wait_for_target_click(
+                        self.player.board, status=TURN_MSG
+                    )
+                ) is None:
                     return
 
                 row, col = choice
