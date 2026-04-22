@@ -2,8 +2,8 @@ from source.constants import ROLE_MSG
 from source.role import Role
 
 
-def get_input(promt: str) -> str:
-    return input(promt).strip()
+def get_input(prompt: str) -> str:
+    return input(prompt).strip()
 
 
 def get_role() -> Role:
