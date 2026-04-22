@@ -1,18 +1,13 @@
+from collections.abc import Sequence
+
 import pygame
-from pygame import (
-    KEYDOWN,
-    K_r,
-    MOUSEBUTTONDOWN,
-    QUIT,
-    display,
-    draw,
-)
+from pygame import KEYDOWN, MOUSEBUTTONDOWN, QUIT, K_r, Rect, display, draw
 from pygame.font import SysFont
 from pygame.time import Clock
 
 from source.board import Board
-from source.coordinate import Coordinate
 from source.constants import N_COLS, N_ROWS, OTHER_BOARD, OWN_BOARD
+from source.coordinate import Coordinate
 from source.orientation import Orientation
 from source.ship import Ship
 from source.square import Square
@@ -48,7 +43,9 @@ class PygameUI:
         orientation = Orientation.HORIZONTAL
 
         while True:
-            hovered = self._grid_cell_from_pos(pygame.mouse.get_pos(), self.left_origin)
+            hovered = self._grid_cell_from_pos(
+                pygame.mouse.get_pos(), self.left_origin
+            )
             candidate = self._ship_for_cell(hovered, orientation, ship_length)
 
             for event in pygame.event.get():
@@ -69,13 +66,18 @@ class PygameUI:
 
             self._fill_background()
             orient_label = (
-                "Horizontal" if orientation is Orientation.HORIZONTAL else "Vertical"
+                "Horizontal"
+                if orientation is Orientation.HORIZONTAL
+                else "Vertical"
             )
             self._draw_heading(
                 "Place Your Ship",
-                f"Length {ship_length}. Click to place. Press R to rotate ({orient_label}).",
+                f"Length {ship_length}. Click to place. Press R to rotate "
+                f"({orient_label}).",
             )
-            self._draw_board_grid(self.left_origin, OWN_BOARD, preview_ship=candidate)
+            self._draw_board_grid(
+                self.left_origin, OWN_BOARD, preview_ship=candidate
+            )
             display.flip()
             self.clock.tick(self.FPS)
 
@@ -123,7 +125,7 @@ class PygameUI:
 
     def _draw_board(
         self,
-        grid: list[list[Square]],
+        grid: Sequence[Sequence[Square]],
         origin: tuple[int, int],
         title: str,
         hide_ships: bool,
@@ -139,7 +141,7 @@ class PygameUI:
                 color = self._color_for_square(sq, hide_ships)
                 if hover_cell == (r, c):
                     color = self._hover_color(color)
-                rect = pygame.Rect(
+                rect = Rect(
                     ox + c * self.CELL,
                     oy + r * self.CELL,
                     self.CELL,
@@ -179,11 +181,14 @@ class PygameUI:
         self.screen.fill((18, 22, 30))
 
     def _hoverable_other_cell(self, board: Board) -> tuple[int, int] | None:
-        cell = self._grid_cell_from_pos(pygame.mouse.get_pos(), self.right_origin)
+        cell = self._grid_cell_from_pos(
+            pygame.mouse.get_pos(), self.right_origin
+        )
         if cell is None:
             return None
 
         row, col = cell
+
         if board.other_view[row][col] in {Square.HIT, Square.MISS}:
             return None
         return cell
@@ -214,6 +219,7 @@ class PygameUI:
             return None
 
         row, col = cell
+
         try:
             return Ship(
                 Coordinate(row=chr(ord("A") + row), column=col + 1),
@@ -237,4 +243,4 @@ class PygameUI:
 
     @staticmethod
     def _hover_color(color: tuple[int, int, int]) -> tuple[int, int, int]:
-        return tuple(min(channel + 28, 255) for channel in color)
+        return tuple(min(channel + 28, 255) for channel in color)  # type: ignore

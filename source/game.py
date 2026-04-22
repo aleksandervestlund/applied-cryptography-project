@@ -21,41 +21,47 @@ class Game:
     def check_lost(self) -> bool:
         return self.player.board.check_all_ships_sunk()
 
+    def handle_my_go(self, ui: PygameUI) -> None:
+        if (
+            choice := ui.wait_for_target_click(
+                self.player.board, status=TURN_MSG
+            )
+        ) is None:
+            return
+
+        row, col = choice
+        coordinate = Coordinate(ROWS[row], col + 1)
+
+        send(self.player.conn, str(coordinate))
+        result = recv()
+
+        hit = result in {HIT_STR, LOST_STR}
+        self.player.board.check_hit_on_other(coordinate, hit)
+
+        if result == LOST_STR:
+            ui.draw(self.player.board, status=WIN_MSG)
+            return
+
+    def handle_opponent_go(self, ui: PygameUI) -> None:
+        ui.draw(self.player.board, status="Waiting for opponent...")
+
+        coordinate = Coordinate.from_str(recv())
+        hit = self.player.board.check_hit_on_self(coordinate)
+
+        if hit and self.check_lost():
+            send(self.player.conn, LOST_STR)
+            ui.draw(self.player.board, status="You lost")
+            return
+
+        send(self.player.conn, HIT_STR if hit else MISS_STR)
+
     def run(self, ui: PygameUI) -> None:
         my_go = self.player.is_host
 
         while True:
             if my_go:
-                if (
-                    choice := ui.wait_for_target_click(
-                        self.player.board, status=TURN_MSG
-                    )
-                ) is None:
-                    return
-
-                row, col = choice
-                coordinate = Coordinate(ROWS[row], col + 1)
-
-                send(self.player.conn, str(coordinate))
-                result = recv()
-
-                hit = result in {HIT_STR, LOST_STR}
-                self.player.board.check_hit_on_other(coordinate, hit)
-
-                if result == LOST_STR:
-                    ui.draw(self.player.board, status=WIN_MSG)
-                    return
+                self.handle_my_go(ui)
             else:
-                ui.draw(self.player.board, status="Waiting for opponent...")
-
-                coordinate = Coordinate.from_str(recv())
-                hit = self.player.board.check_hit_on_self(coordinate)
-
-                if hit and self.check_lost():
-                    send(self.player.conn, LOST_STR)
-                    ui.draw(self.player.board, status="You lost")
-                    return
-
-                send(self.player.conn, HIT_STR if hit else MISS_STR)
+                self.handle_opponent_go(ui)
 
             my_go = not my_go

@@ -9,8 +9,7 @@ def main() -> None:
     ui = PygameUI()
 
     try:
-        ships = ui.place_ship(SHIP_LENGTHS[0])
-        if ships is None:
+        if (ships := ui.place_ship(SHIP_LENGTHS[0])) is None:
             return
 
         player.set_ships(ships)

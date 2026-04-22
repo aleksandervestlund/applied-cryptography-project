@@ -1,15 +1,6 @@
 from dataclasses import dataclass, field
 
-from source.constants import (
-    BASE_SPACE,
-    HEAD_SPACE,
-    N_COLS,
-    N_ROWS,
-    OTHER_BOARD,
-    OWN_BOARD,
-    ROWS,
-    SEP_SPACE,
-)
+from source.constants import N_COLS, N_ROWS
 from source.coordinate import Coordinate
 from source.ship import Ship
 from source.square import Square
@@ -54,28 +45,3 @@ class Board:
     def check_hit_on_other(self, coordinate: Coordinate, hit: bool) -> None:
         x, y = coordinate.to_idx()
         self.other_view[x][y] = Square.HIT if hit else Square.MISS
-
-    def print_board(self) -> None:
-        column_names = " ".join(f" {i:<2}" for i in range(1, N_COLS + 1))
-        board_width = len(column_names)
-        header = f"{BASE_SPACE}{column_names}{HEAD_SPACE}{column_names}"
-        sep = f"  +{'-' * board_width}+{SEP_SPACE}+{'-' * board_width}+"
-
-        print(
-            f"  {OWN_BOARD:^{board_width + 2}}{BASE_SPACE}  "
-            f"{OTHER_BOARD:^{board_width + 2}}"
-        )
-        print(header)
-        print(sep)
-
-        for i, (own_row, other_row) in enumerate(
-            zip(self.self_view, self.other_view)
-        ):
-            own_vals = "|".join(f"{sq.value:^3}" for sq in own_row)
-            other_vals = "|".join(f"{sq.value:^3}" for sq in other_row)
-
-            print(
-                f"{ROWS[i]} |{own_vals}|{BASE_SPACE}"
-                f"{ROWS[i]} |{other_vals}|"
-            )
-            print(sep)
