@@ -1,0 +1,27 @@
+{
+  "name": "applied-cryptography-project",
+  "version": "1.0.0",
+  "description": "Battleship-style applied cryptography project",
+  "private": true,
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "snarkjs": "snarkjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleksandervestlund/applied-cryptography-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/aleksandervestlund/applied-cryptography-project/issues"
+  },
+  "homepage": "https://github.com/aleksandervestlund/applied-cryptography-project#readme",
+  "devDependencies": {
+    "snarkjs": "0.7.6"
+  }
+}
