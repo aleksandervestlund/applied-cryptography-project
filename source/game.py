@@ -25,6 +25,12 @@ class Game:
 
         coordinate = get_coordinate()
         send(self.player.conn, str(coordinate))
+        recv()
+        my_proof, my_signals = self.player.generate_proof(a=5, b=77)
+        send(self.player.conn, my_proof)
+        recv()
+        send(self.player.conn, my_signals)
+        recv()
 
         result = recv()
         hit = result in {HIT_STR, LOST_STR}
@@ -43,6 +49,15 @@ class Game:
 
     def defending_turn(self) -> bool:
         coordinate = Coordinate.from_str(recv())
+        send(self.player.conn, ' ')
+        proof = recv()
+        send(self.player.conn, ' ')
+        signals = recv()
+        send(self.player.conn, ' ')
+        print("Received proof for signals:", signals)
+        is_valid = self.player.verify_proof(proof, signals)
+        print("Proof result:", is_valid)
+
         hit = self.player.board.check_hit_on_self(coordinate)
 
         if hit and self.check_lost():
@@ -71,3 +86,5 @@ class Game:
                 self.defending_turn()
 
             my_go = not my_go
+
+        self.player.close()

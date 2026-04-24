@@ -1,5 +1,5 @@
 from source.role import Role as _Role
-
+import os
 
 # SHIP_LENGTHS = [5, 4, 3, 3, 2]
 SHIP_LENGTHS = [2]
@@ -66,3 +66,5 @@ LOST_STR = "LOST"
 
 INVALID_COL_ERR = "Invalid column: {column!r}"
 INVALID_ROW_ERR = "Invalid row: {row!r}"
+
+HTML_FILE_PATH = f"file://{os.path.abspath('source/groth16_proof.html')}"
