@@ -17,8 +17,8 @@ class ZKCircuitRunnerCLITests(TestCase):
                 [
                     "prove",
                     "circuits/inputs/polynomial_valid.json",
-                    "circuits/main.wasm",
-                    "circuits/main.groth16.zkey",
+                    "circuits/polynomial.wasm",
+                    "circuits/polynomial.groth16.zkey",
                     str(proof_path),
                     str(public_path),
                 ]
@@ -31,7 +31,7 @@ class ZKCircuitRunnerCLITests(TestCase):
             verify_exit_code = _run_cli(
                 [
                     "verify",
-                    "circuits/main.groth16.vkey.json",
+                    "circuits/polynomial.groth16.vkey.json",
                     str(public_path),
                     str(proof_path),
                 ]
@@ -48,8 +48,8 @@ class ZKCircuitRunnerCLITests(TestCase):
                 [
                     "prove",
                     "circuits/inputs/polynomial_invalid.json",
-                    "circuits/main.wasm",
-                    "circuits/main.groth16.zkey",
+                    "circuits/polynomial.wasm",
+                    "circuits/polynomial.groth16.zkey",
                     str(proof_path),
                     str(public_path),
                 ]
@@ -66,7 +66,7 @@ class ZKCircuitRunnerCLITests(TestCase):
             exit_code = _run_cli(
                 [
                     "export-vkey",
-                    "circuits/main.groth16.zkey",
+                    "circuits/polynomial.groth16.zkey",
                     str(verification_key_path),
                 ]
             )

@@ -53,9 +53,9 @@ Use zkrepl or a local Circom setup to compile `circuits/polynomial.circom` and
 generate these artifacts:
 
 ```text
-circuits/artifacts/polynomial.wasm
-circuits/artifacts/polynomial.zkey
-circuits/artifacts/polynomial.vkey.json
+circuits/polynomial.wasm
+circuits/polynomial.groth16.zkey
+circuits/polynomial.groth16.vkey.json
 ```
 
 Then generate and verify a proof with the Python wrapper:
@@ -68,16 +68,16 @@ from source.zk_circuit_runner import prove_groth16, verify_groth16
 
 prove_groth16(
     input_path=Path("circuits/inputs/polynomial_valid.json"),
-    wasm_path=Path("circuits/artifacts/polynomial.wasm"),
-    zkey_path=Path("circuits/artifacts/polynomial.zkey"),
-    proof_path=Path("circuits/artifacts/polynomial_proof.json"),
-    public_path=Path("circuits/artifacts/polynomial_public.json"),
+    wasm_path=Path("circuits/polynomial.wasm"),
+    zkey_path=Path("circuits/polynomial.groth16.zkey"),
+    proof_path=Path("circuits/polynomial_proof.json"),
+    public_path=Path("circuits/polynomial_public.json"),
 )
 
 is_valid = verify_groth16(
-    verification_key_path=Path("circuits/artifacts/polynomial.vkey.json"),
-    public_path=Path("circuits/artifacts/polynomial_public.json"),
-    proof_path=Path("circuits/artifacts/polynomial_proof.json"),
+    verification_key_path=Path("circuits/polynomial.groth16.vkey.json"),
+    public_path=Path("circuits/polynomial_public.json"),
+    proof_path=Path("circuits/polynomial_proof.json"),
 )
 ```
 
@@ -86,15 +86,15 @@ Or run the same flow through the command line:
 ```bash
 python3 -m source.zk_circuit_runner prove \
   circuits/inputs/polynomial_valid.json \
-  circuits/artifacts/polynomial.wasm \
-  circuits/artifacts/polynomial.zkey \
-  circuits/artifacts/polynomial_proof.json \
-  circuits/artifacts/polynomial_public.json
+  circuits/polynomial.wasm \
+  circuits/polynomial.groth16.zkey \
+  circuits/polynomial_proof.json \
+  circuits/polynomial_public.json
 
 python3 -m source.zk_circuit_runner verify \
-  circuits/artifacts/polynomial.vkey.json \
-  circuits/artifacts/polynomial_public.json \
-  circuits/artifacts/polynomial_proof.json
+  circuits/polynomial.groth16.vkey.json \
+  circuits/polynomial_public.json \
+  circuits/polynomial_proof.json
 ```
 
 Generate a Groth16 proof:
